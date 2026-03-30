@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import RewireBlock from "@/components/RewireBlock";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -88,18 +89,13 @@ export default function Home() {
   const [faultKind, setFaultKind]     = useState<FaultKind | null>(null);
   const [noFile, setNoFile]           = useState(false);
   const [scanIdx, setScanIdx]         = useState(0);
-  const [mutationSeed, setMutationSeed] = useState<number>(() => Math.random());
-  const [imgLoading, setImgLoading]   = useState(true);
-  const [imgError, setImgError]       = useState(false);
 
   const scanInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Cleanup on unmount
   useEffect(() => () => {
     if (scanInterval.current) clearInterval(scanInterval.current);
   }, []);
 
-  // Cycle scan messages while parsing
   useEffect(() => {
     if (phase === "parsing") {
       setScanIdx(0);
@@ -133,16 +129,7 @@ export default function Home() {
     setApiError("");
     setFaultKind(null);
     setNoFile(false);
-    setMutationSeed(Math.random());
-    setImgLoading(true);
-    setImgError(false);
   };
-
-  const handleMutate = useCallback(() => {
-    setMutationSeed(Math.random());
-    setImgLoading(true);
-    setImgError(false);
-  }, []);
 
   const handleVisualize = async () => {
     if (phase === "parsing") return;
@@ -194,9 +181,6 @@ export default function Home() {
       }
 
       setAnalysis(json.analysis ?? "");
-      setMutationSeed(Math.random());
-      setImgLoading(true);
-      setImgError(false);
       setPhase("result");
     } catch (err: unknown) {
       setFaultKind("corrupt");
@@ -217,21 +201,33 @@ export default function Home() {
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0 flex select-none items-center justify-center px-8 text-center font-mono text-[0.6rem] normal-case leading-loose tracking-widest text-[#e5e5e5]/[0.055] sm:text-xs"
       >
-        Artistic creation demands of the artist that he perish utterly.
+        clothing is just the wrapping around a bouquet of flowers — real beauty always begins from within.
       </p>
 
       {/* ── Header */}
       <header className="relative z-10">
-        <div className="mb-1 flex items-center gap-3">
+        <div className="mb-2 flex items-center gap-3">
           <span className="h-px flex-1 bg-[#e5e5e5]/10" />
           <span className="font-mono text-[0.55rem] tracking-[0.3em] text-[#e5e5e5]/30 sm:text-[0.6rem]">
             SYS // ONLINE
           </span>
         </div>
-        <h1 className="font-mono text-sm font-bold tracking-[0.14em] text-[#e5e5e5] sm:text-base sm:tracking-[0.18em]">
-          YeyesayPowerDesign // V1
-        </h1>
-        <div className="mt-3 h-px w-full bg-gradient-to-r from-[#e5e5e5]/20 via-[#e5e5e5]/8 to-transparent" />
+        <div className="flex flex-col gap-1">
+          <h1 className="font-mono text-base font-black tracking-[0.16em] text-[#e5e5e5] sm:text-lg sm:tracking-[0.2em]">
+            OOPS — YeyesayPowerDesign
+          </h1>
+          <p className="font-mono text-[0.5rem] font-bold tracking-[0.22em] text-[#e5e5e5]/30 sm:text-[0.55rem]">
+            V1 // GARMENT DECONSTRUCTION ENGINE
+          </p>
+        </div>
+        {/* Brand manifesto */}
+        <div className="mt-4 border-l-2 border-[#e5e5e5]/20 pl-3">
+          <p className="font-mono text-[0.52rem] normal-case leading-loose tracking-wider text-[#e5e5e5]/30 sm:text-[0.58rem]">
+            The world already has enough clothing. We take what exists —
+            good materials, real craft — and make it yours.
+          </p>
+        </div>
+        <div className="mt-4 h-[2px] w-full bg-[#e5e5e5]/12" />
       </header>
 
       {/* ── Main */}
@@ -249,10 +245,10 @@ export default function Home() {
         {phase !== "result" && (
           <div className="flex flex-col gap-2">
             <label
-              className={`group relative block overflow-hidden border bg-[#0a0a0a] transition-all duration-300 active:scale-[0.99] ${
+              className={`group relative block overflow-hidden border-2 bg-[#0a0a0a] shadow-[4px_4px_0_0_#1a1a1a] transition-all duration-300 active:scale-[0.99] ${
                 isLocked
                   ? "cursor-not-allowed border-[#1a1a1a] opacity-40"
-                  : "cursor-pointer border-[#2c2c2c] hover:border-[#e5e5e5]/35 hover:bg-[#0f0f0f]"
+                  : "cursor-pointer border-[#2c2c2c] hover:border-[#e5e5e5]/35 hover:bg-[#0f0f0f] hover:shadow-[4px_4px_0_0_#333]"
               }`}
             >
               <span
@@ -267,11 +263,11 @@ export default function Home() {
                 onChange={handleFileChange}
               />
               <span className="relative flex flex-col items-center gap-1.5 px-6 py-5 text-center sm:py-6">
-                <span className="font-mono text-xs tracking-[0.22em] text-[#e5e5e5] sm:text-sm sm:tracking-[0.26em]">
-                  UPLOAD GARMENT
+                <span className="font-mono text-xs font-bold tracking-[0.22em] text-[#e5e5e5] sm:text-sm sm:tracking-[0.26em]">
+                  SUBMIT A GARMENT
                 </span>
                 <span className="font-mono text-[0.55rem] tracking-[0.15em] text-[#e5e5e5]/35 sm:text-[0.6rem]">
-                  {file ? `✓ ${file.name}` : "ANY FORMAT — COMPRESSED CLIENT-SIDE"}
+                  {file ? `✓ ${file.name}` : "WHAT ALREADY EXISTS — WE GIVE IT NEW LIFE"}
                 </span>
               </span>
             </label>
@@ -293,11 +289,11 @@ export default function Home() {
 
         {/* ── ERROR */}
         {phase === "error" && (
-          <div className="border border-red-900/50 bg-[#0a0303] px-4 py-4">
-            <p className="mb-1 font-mono text-[0.5rem] tracking-[0.25em] text-red-400/50 sm:text-[0.55rem]">
+          <div className="border-2 border-red-900/60 bg-[#0a0303] px-4 py-4 shadow-[4px_4px_0_0_rgba(127,29,29,0.5)]">
+            <p className="mb-1 font-mono text-[0.5rem] font-bold tracking-[0.25em] text-red-400/50 sm:text-[0.55rem]">
               ENGINE FAULT // ERR
             </p>
-            <p className="font-mono text-xs tracking-[0.12em] text-red-400 sm:text-sm">
+            <p className="font-mono text-xs font-bold tracking-[0.12em] text-red-400 sm:text-sm">
               {faultKind === "unauthorized"
                 ? "ENGINE FAULT // UNAUTHORIZED"
                 : "GEOMETRY CORRUPTED"}
@@ -312,7 +308,7 @@ export default function Home() {
 
         {/* ── CINEMATIC PARSING PANEL */}
         {phase === "parsing" && (
-          <div className="relative overflow-hidden border border-[#e5e5e5]/8 bg-[#060606]">
+          <div className="relative overflow-hidden border-2 border-[#e5e5e5]/12 bg-[#060606] shadow-[4px_4px_0_0_#1a1a1a]">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#e5e5e5]/25 to-transparent"
@@ -320,14 +316,14 @@ export default function Home() {
             />
             <div className="flex flex-col gap-3.5 px-5 py-5 sm:px-6 sm:py-6">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[0.5rem] tracking-[0.28em] text-[#e5e5e5]/25 sm:text-[0.55rem]">
+                <span className="font-mono text-[0.5rem] font-bold tracking-[0.28em] text-[#e5e5e5]/25 sm:text-[0.55rem]">
                   VISION ENGINE // ACTIVE
                 </span>
                 <span className="font-mono text-[0.5rem] tracking-[0.18em] text-[#e5e5e5]/18 sm:text-[0.55rem]">
                   JPEG · {MAX_DIM}px · Q{JPEG_Q * 100 | 0}
                 </span>
               </div>
-              <p className="min-h-[1.25rem] font-mono text-xs tracking-[0.2em] text-[#e5e5e5]/80 sm:text-sm">
+              <p className="min-h-[1.25rem] font-mono text-xs font-bold tracking-[0.2em] text-[#e5e5e5]/80 sm:text-sm">
                 <span className="mr-2.5 inline-block h-1.5 w-1.5 animate-ping rounded-full bg-[#e5e5e5]/70 align-middle" />
                 {SCAN_MESSAGES[scanIdx]}
               </p>
@@ -356,27 +352,33 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── PERMANENT ANALYSIS RESULT */}
+        {/* ── ANALYSIS RESULT — terminal-feed flicker */}
         {phase === "result" && analysis && (
-          <div className="relative overflow-hidden border border-[#e5e5e5]/12 bg-[#080808]">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#e5e5e5]/10 to-transparent"
-            />
+          <div className="relative border-4 border-[#e5e5e5] bg-[#080808] shadow-[8px_8px_0_0_#e5e5e5]">
+            {/* Harsh top accent bar */}
+            <div className="h-1 w-full bg-[#e5e5e5]" />
             <div className="px-5 py-6 sm:px-6 sm:py-7">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="font-mono text-[0.5rem] tracking-[0.25em] text-[#e5e5e5]/28 sm:text-[0.55rem]">
-                  VISION ENGINE // ANALYSIS OUTPUT
-                </p>
-                <p className="font-mono text-[0.5rem] tracking-[0.2em] text-[#e5e5e5]/18 sm:text-[0.55rem]">
-                  {file?.name?.slice(0, 18) ?? "—"}
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[0.5rem] font-black tracking-[0.3em] text-[#e5e5e5]/40 sm:text-[0.55rem]">
+                    STRUCTURAL DECONSTRUCTION //
+                  </p>
+                  <p className="font-mono text-[0.48rem] tracking-[0.22em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
+                    OOPS VISION ENGINE — RAW OUTPUT
+                  </p>
+                </div>
+                <p className="shrink-0 font-mono text-[0.48rem] tracking-[0.15em] text-[#e5e5e5]/15 sm:text-[0.52rem]">
+                  {file?.name?.slice(0, 16) ?? "—"}
                 </p>
               </div>
-              <div className="h-px w-full bg-[#181818] mb-4" />
-              <p className="font-mono text-[0.78rem] normal-case leading-relaxed tracking-wide text-[#e5e5e5]/90 sm:text-[0.85rem] sm:leading-relaxed">
+              <div className="h-[2px] w-full bg-[#333]" />
+              <p className="terminal-feed mt-4 font-mono text-[0.78rem] normal-case leading-relaxed tracking-wide text-[#e5e5e5]/90 sm:text-[0.85rem] sm:leading-relaxed">
                 {analysis}
               </p>
-              <div className="mt-6 h-px w-full bg-[#181818]" />
+              <div className="mt-6 h-[2px] w-full bg-[#333]" />
+              <p className="mt-3 font-mono text-[0.46rem] font-bold tracking-[0.22em] text-[#e5e5e5]/20 sm:text-[0.5rem]">
+                CLOTHING IS JUST WRAPPING — REAL BEAUTY COMES FROM WITHIN
+              </p>
             </div>
           </div>
         )}
@@ -387,100 +389,32 @@ export default function Home() {
             type="button"
             disabled={isLocked}
             onClick={handleVisualize}
-            className="group relative overflow-hidden border border-[#e5e5e5]/20 bg-transparent px-6 py-5 font-mono text-xs tracking-[0.2em] text-[#e5e5e5] transition-all duration-300 hover:border-[#e5e5e5]/50 hover:bg-[#e5e5e5]/[0.03] active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 sm:py-6 sm:text-sm sm:tracking-[0.24em]"
+            className="relative w-full border-4 border-[#e5e5e5] bg-[#e5e5e5] px-6 py-5 font-mono text-sm font-black tracking-[0.2em] text-[#050505] shadow-[6px_6px_0_0_#39ff14] transition-all duration-100 hover:bg-[#050505] hover:text-[#e5e5e5] hover:shadow-[8px_8px_0_0_#39ff14] active:scale-[0.99] active:shadow-[2px_2px_0_0_#39ff14] disabled:cursor-wait disabled:opacity-60 sm:py-6 sm:text-base sm:tracking-[0.24em]"
           >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#e5e5e5]/5 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-            />
             <span className="relative">
-              {phase === "parsing" ? "PARSING GEOMETRY..." : "VISUALIZE DECONSTRUCTION"}
+              {phase === "parsing" ? "PARSING GEOMETRY..." : "DECONSTRUCT THIS GARMENT"}
             </span>
           </button>
         )}
 
-        {/* ── SYNTHESIZED PERMUTATIONS */}
+        {/* ══════════════ REWIRE BLOCK — FAL.AI FLUX-SCHNELL ══════════════ */}
         {phase === "result" && analysis && (
-          <div className="flex flex-col gap-0 border border-[#e5e5e5]/10 bg-[#060606]">
-            {/* Section header */}
-            <div className="flex items-center justify-between border-b border-[#e5e5e5]/8 px-5 py-3 sm:px-6">
-              <span className="font-mono text-[0.5rem] tracking-[0.28em] text-[#e5e5e5]/35 sm:text-[0.55rem]">
-                SYNTHESIZED PERMUTATIONS
-              </span>
-              <span className="font-mono text-[0.48rem] tracking-[0.18em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
-                SEED // {Math.floor(mutationSeed * 0xffff).toString(16).toUpperCase().padStart(4, "0")}
-              </span>
-            </div>
-
-            {/* Image container */}
-            <div className="relative w-full overflow-hidden bg-[#030303]" style={{ aspectRatio: "3/4" }}>
-              {/* Loading state */}
-              {imgLoading && !imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <span className="inline-block h-1.5 w-1.5 animate-ping rounded-full bg-[#e5e5e5]/40" />
-                  <p className="font-mono text-[0.5rem] tracking-[0.22em] text-[#e5e5e5]/25 sm:text-[0.55rem]">
-                    RENDERING PERMUTATION...
-                  </p>
-                </div>
-              )}
-              {/* Error state */}
-              {imgError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                  <p className="font-mono text-[0.55rem] tracking-[0.18em] text-[#e5e5e5]/30 sm:text-[0.6rem]">
-                    RENDER FAILED
-                  </p>
-                  <p className="font-mono text-[0.48rem] tracking-[0.14em] text-[#e5e5e5]/15 sm:text-[0.52rem]">
-                    POLLINATIONS.AI UNREACHABLE
-                  </p>
-                </div>
-              )}
-              {/* Generated image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                key={mutationSeed}
-                src={`https://image.pollinations.ai/prompt/High-fashion%20editorial%20photography,%20brutalist%20avant-garde%20garment,%20${encodeURIComponent(analysis)}?width=768&height=1024&nologo=true&seed=${mutationSeed}&model=flux`}
-                alt="AI synthesized garment permutation"
-                onLoad={() => { setImgLoading(false); setImgError(false); }}
-                onError={() => { setImgLoading(false); setImgError(true); }}
-                className={`h-full w-full object-cover transition-opacity duration-700 ${imgLoading || imgError ? "opacity-0" : "opacity-100"}`}
-              />
-            </div>
-
-            {/* MUTATE button — inverted fill */}
-            <button
-              type="button"
-              onClick={handleMutate}
-              disabled={imgLoading}
-              className="group relative overflow-hidden border-t border-[#e5e5e5]/10 bg-[#e5e5e5] px-6 py-4 font-mono text-[0.65rem] tracking-[0.22em] text-[#050505] transition-all duration-200 hover:bg-white active:scale-[0.99] disabled:cursor-wait disabled:opacity-50 sm:py-5 sm:text-xs sm:tracking-[0.26em]"
-            >
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-black/8 to-transparent transition-transform duration-500 group-hover:translate-x-full"
-              />
-              <span className="relative">
-                {imgLoading ? "RENDERING..." : "MUTATE GEOMETRY"}
-              </span>
-            </button>
-          </div>
+          <RewireBlock analysisText={analysis} />
         )}
 
-        {/* ── RESET BUTTON — shown only after a result */}
+        {/* ── RESET BUTTON */}
         {phase === "result" && (
           <button
             type="button"
             onClick={handleReset}
-            className="group relative overflow-hidden border border-[#e5e5e5]/15 bg-transparent px-6 py-4 font-mono text-[0.65rem] tracking-[0.22em] text-[#e5e5e5]/60 transition-all duration-300 hover:border-[#e5e5e5]/35 hover:text-[#e5e5e5]/90 active:scale-[0.99] sm:py-5 sm:text-xs sm:tracking-[0.26em]"
+            className="group relative overflow-hidden border-2 border-[#e5e5e5]/20 bg-transparent px-6 py-4 font-mono text-[0.65rem] font-bold tracking-[0.22em] text-[#e5e5e5]/40 shadow-[3px_3px_0_0_#1a1a1a] transition-all duration-150 hover:border-[#e5e5e5]/40 hover:text-[#e5e5e5]/80 hover:shadow-[4px_4px_0_0_#333] active:scale-[0.99] sm:py-5 sm:text-xs sm:tracking-[0.26em]"
           >
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-[#e5e5e5]/4 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-            />
-            <span className="relative">INITIALIZE NEW SCAN</span>
+            <span className="relative">↩ SUBMIT ANOTHER GARMENT</span>
           </button>
         )}
 
         {/* Status line */}
-        <p className="text-center font-mono text-[0.48rem] tracking-[0.2em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
+        <p className="text-center font-mono text-[0.48rem] font-bold tracking-[0.2em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
           {phase === "parsing" ? "TRANSMITTING TO VISION ENGINE..." :
            phase === "result"  ? "ANALYSIS COMPLETE // STANDING BY" :
            "VISION ENGINE v1.0 // STANDBY"}
@@ -488,9 +422,12 @@ export default function Home() {
       </main>
 
       {/* ── Footer */}
-      <footer className="relative z-10 border-t border-[#e5e5e5]/[0.06] pt-4">
-        <p className="text-center font-mono text-[0.48rem] tracking-[0.18em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
-          © YEYESAYPOWERDESIGN — UNAUTHORIZED ACCESS PROHIBITED
+      <footer className="relative z-10 border-t-2 border-[#e5e5e5]/10 pt-5">
+        <p className="text-center font-mono text-[0.48rem] font-bold tracking-[0.18em] text-[#e5e5e5]/18 sm:text-[0.52rem]">
+          © OOPS — YEYESAYPOWERDESIGN
+        </p>
+        <p className="mt-1 text-center font-mono text-[0.44rem] normal-case tracking-wider text-[#e5e5e5]/10 sm:text-[0.48rem]">
+          fashion should support who you are, not define your worth.
         </p>
       </footer>
     </div>

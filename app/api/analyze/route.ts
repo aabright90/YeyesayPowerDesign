@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 /** Vercel / Next payload limit (Pages API shape; harmless if ignored by App Router). */
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb" as const,
-    },
-  },
-};
+export const maxDuration = 30; // seconds
 
 // --- THE FIX: Switched to the universally accepted base model ---
 const MODEL_ID = "gemini-2.5-flash" as const;

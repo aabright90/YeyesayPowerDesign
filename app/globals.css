@@ -7,6 +7,7 @@
   --foreground: #ffffff;
   --border: #222222;
   --dim: #888888;
+  --acid: #39ff14;
 }
 
 * {
@@ -47,7 +48,8 @@ body::after {
   animation: grain-shift 0.15s steps(1) infinite;
 }
 
-/* Scan line overlay for camera */
+/* ── Keyframes ─────────────────────────────────────────────────────────── */
+
 @keyframes scan {
   0% {
     transform: translateY(-100%);
@@ -113,7 +115,148 @@ body::after {
   }
 }
 
-/* Scrollbar — minimal */
+/* Terminal-feed CRT-style flicker on analysis text */
+@keyframes terminal-feed {
+  0%,
+  100% {
+    opacity: 0.9;
+    text-shadow: 0 0 2px rgba(229, 229, 229, 0.15);
+  }
+  4% {
+    opacity: 0.65;
+    text-shadow: 0 0 4px rgba(229, 229, 229, 0.3);
+  }
+  5% {
+    opacity: 0.9;
+    text-shadow: 0 0 2px rgba(229, 229, 229, 0.15);
+  }
+  48% {
+    opacity: 0.9;
+    text-shadow: 0 0 2px rgba(229, 229, 229, 0.15);
+  }
+  50% {
+    opacity: 0.7;
+    text-shadow: 0 0 5px rgba(229, 229, 229, 0.35);
+  }
+  52% {
+    opacity: 0.9;
+    text-shadow: 0 0 2px rgba(229, 229, 229, 0.15);
+  }
+}
+.terminal-feed {
+  animation: terminal-feed 2.4s steps(1) infinite;
+}
+
+/* Glitch effect for REWIRE AESTHETIC button */
+@keyframes glitch-x {
+  0%,
+  100% {
+    clip-path: inset(0 0 98% 0);
+    transform: translateX(0);
+  }
+  20% {
+    clip-path: inset(30% 0 40% 0);
+    transform: translateX(-4px);
+  }
+  40% {
+    clip-path: inset(60% 0 10% 0);
+    transform: translateX(4px);
+  }
+  60% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translateX(-3px);
+  }
+  80% {
+    clip-path: inset(80% 0 5% 0);
+    transform: translateX(3px);
+  }
+}
+@keyframes glitch-y {
+  0%,
+  100% {
+    clip-path: inset(0 0 98% 0);
+    transform: translateX(0);
+  }
+  20% {
+    clip-path: inset(45% 0 20% 0);
+    transform: translateX(5px);
+  }
+  40% {
+    clip-path: inset(15% 0 55% 0);
+    transform: translateX(-5px);
+  }
+  60% {
+    clip-path: inset(70% 0 5% 0);
+    transform: translateX(4px);
+  }
+  80% {
+    clip-path: inset(5% 0 80% 0);
+    transform: translateX(-4px);
+  }
+}
+@keyframes blink-on {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.glitch-btn {
+  position: relative;
+}
+.glitch-btn::before,
+.glitch-btn::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  letter-spacing: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+.glitch-btn::before {
+  color: #ff003c;
+  mix-blend-mode: screen;
+}
+.glitch-btn::after {
+  color: var(--acid);
+  mix-blend-mode: screen;
+}
+.glitch-btn:hover::before {
+  opacity: 0.85;
+  animation: glitch-x 0.35s steps(1) infinite;
+}
+.glitch-btn:hover::after {
+  opacity: 0.85;
+  animation: glitch-y 0.35s steps(1) infinite;
+}
+
+/* Rewire rave button — harsh offset shadow, fast twitchy transitions */
+.rewire-rave {
+  box-shadow: 4px 4px 0 #e5e5e5;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
+    background-color 0.08s ease-out, color 0.08s ease-out,
+    border-color 0.08s ease-out;
+}
+.rewire-rave:hover:not(:disabled) {
+  transform: skewX(-2deg) scale(1.02);
+  box-shadow: 6px 6px 0 var(--acid);
+  border-color: var(--acid) !important;
+}
+.rewire-rave:active:not(:disabled) {
+  transform: skewX(0deg) scale(0.99);
+  box-shadow: 2px 2px 0 var(--acid);
+}
+
+/* ── Scrollbar — minimal ──────────────────────────────────────────────── */
+
 ::-webkit-scrollbar {
   width: 2px;
   height: 2px;
@@ -142,7 +285,6 @@ body::after {
   .text-dim {
     color: #888888;
   }
-  /* override global text-transform: uppercase for prose passages */
   .normal-case {
     text-transform: none !important;
   }
