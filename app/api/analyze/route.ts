@@ -8,18 +8,20 @@ export const maxDuration = 30; // seconds
 const MODEL_ID = "gemini-2.5-flash" as const;
 
 const SYSTEM_INSTRUCTION =
-  "You are a high-end technical fashion consultant for a brutalist, deconstructed brand. " +
-  "You analyze garments with cold precision and architectural authority. " +
-  "Focus exclusively on construction, silhouette, and geometry — never on color trends or styling. " +
-  "Your voice is terse, technical, and uncompromising.";
+  "You are a raw, underground fashion designer with an environmentally conscious, deconstructive philosophy. " +
+  "You believe the world already has enough clothing — your role is to read what already exists and imagine what it could become. " +
+  "You speak in punchy, poetic fashion critique — the voice of an underground zine, not an academic paper. " +
+  "Use authentic fashion terminology: drape, bias, raw edges, seam, silhouette, textile, tension, form, hand, weight, grain. " +
+  "Never mention geometry, spatial logic, or architecture. Never talk about color trends or styling.";
 
 const USER_PROMPT =
-  "Analyze the construction, silhouette, and geometry of this garment. " +
-  "Provide exactly 3 sentences. " +
-  "First, critique the tension between the textile weight (e.g., sheer or heavy) and the structural draping. " +
-  "Second, analyze the specific seam architecture and any asymmetrical geometry or negative space. " +
-  "Finally, provide a cold, declarative statement on its spatial logic. " +
-  "Be hyper-technical, uncompromising, and use brutalist architectural terminology.";
+  "Look at this garment as a raw material waiting to be reimagined. " +
+  "Write exactly 3 punchy, poetic sentences in the voice of an underground fashion zine. " +
+  "First, describe how the textile drapes and behaves — its weight, its hand, how it falls against the body or resists it. " +
+  "Second, read the seam structure and silhouette — where it is cut, where it pulls, where the raw edges live. " +
+  "Third, give one cold, declarative sentence about the garment's repurpose potential — what it wants to become. " +
+  "Use real fashion words: bias, drape, raw edge, seam, form, tension, warp, grain, hem, tuck. " +
+  "Sound like you are holding the fabric in your hands.";
 
 /** Best-effort HTTP status from @google/generative-ai / fetch wrappers. */
 function extractHttpStatus(err: unknown): number | undefined {
@@ -81,38 +83,16 @@ export async function POST(req: NextRequest) {
     };
     const normMime = mimeMap[mimeType.trim().toLowerCase()] ?? "image/jpeg";
 
-    let model;
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      model = genAI.getGenerativeModel({
-        model: MODEL_ID,
-        systemInstruction: SYSTEM_INSTRUCTION,
-      });
-    } catch (setupErr: unknown) {
-      const status = extractHttpStatus(setupErr);
-      console.error("[/api/analyze] getGenerativeModel failed", {
-        model: MODEL_ID,
-        httpStatus: status ?? "unknown",
-        message: setupErr instanceof Error ? setupErr.message : String(setupErr),
-      });
-      throw setupErr;
-    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: MODEL_ID,
+      systemInstruction: SYSTEM_INSTRUCTION,
+    });
 
-    let result;
-    try {
-      result = await model.generateContent([
-        { inlineData: { data: stripped, mimeType: normMime } },
-        USER_PROMPT,
-      ]);
-    } catch (genErr: unknown) {
-      const status = extractHttpStatus(genErr);
-      console.error("[/api/analyze] generateContent failed", {
-        model: MODEL_ID,
-        httpStatus: status ?? "unknown",
-        message: genErr instanceof Error ? genErr.message : String(genErr),
-      });
-      throw genErr;
-    }
+    const result = await model.generateContent([
+      { inlineData: { data: stripped, mimeType: normMime } },
+      USER_PROMPT,
+    ]);
 
     const analysis = result.response.text().trim();
     return NextResponse.json({ analysis });

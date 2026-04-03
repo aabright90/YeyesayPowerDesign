@@ -289,3 +289,11 @@ body::after {
     text-transform: none !important;
   }
 }
+
+/* ── Punk halftone newsprint background ──────────────────────────────────── */
+
+.bg-punk-halftone {
+  background-color: #f4f4f0;
+  background-image: radial-gradient(#111111 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
