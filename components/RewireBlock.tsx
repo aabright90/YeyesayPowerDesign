@@ -507,7 +507,7 @@ export default function RewireBlock({
             {/* Board label */}
             <div className="mb-3 flex items-center justify-between border-b-4 border-[#111111] pb-2">
               <span className="font-mono text-xs font-black tracking-[0.2em] text-[#111111]">
-                // 01: EXISTING CORPSE
+                {"// 01: EXISTING CORPSE"}
               </span>
               {photosForCorpse.length > 1 && (
                 <span className="bg-[#facc15] px-1.5 py-0.5 font-mono text-[0.52rem] font-black tracking-widest text-[#111111]">
@@ -594,7 +594,7 @@ export default function RewireBlock({
             {/* Board label */}
             <div className="mb-3 flex items-center justify-between border-b-4 border-[#111111] pb-2">
               <span className="font-mono text-xs font-black tracking-[0.2em] text-[#111111]">
-                // 02: MUTATED GEOMETRY
+                {"// 02: MUTATED GEOMETRY"}
               </span>
               {hasMutations && (
                 <span className="bg-[#dc2626] px-1.5 py-0.5 font-mono text-[0.52rem] font-black tracking-widest text-white">
@@ -620,7 +620,7 @@ export default function RewireBlock({
                     [ WEAVING<br />NEW FABRIC ]
                   </p>
                   <p className="font-mono text-xs font-black tracking-[0.28em] text-[#111111]/40">
-                    // STANDBY
+                    {"// STANDBY"}
                   </p>
                   <span className="h-2.5 w-2.5 animate-ping rounded-full bg-[#ff007f]" />
                 </div>

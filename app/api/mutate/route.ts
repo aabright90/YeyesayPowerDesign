@@ -5,12 +5,12 @@ export const maxDuration = 60; // prevents Vercel timeout on Fal.ai cold starts
 export async function POST(req: Request) {
   try {
     // 1. Extract the payload sent from the frontend Studio
-    //    RewireBlock sends `sourceImage` (the canvas data-URL) and `backgroundStyle` (full location string)
     const {
       sourceImage,           // canvas-composited data-URL — what RewireBlock sends
       image_url,             // alias accepted from direct / external callers
       backgroundStyle,       // full descriptive location string from Location Scout
       location,              // alias accepted from direct / external callers
+      clientPhoto  = null,   // the client's own photo — they are the model
       analysisText = "",
       userVision   = null,
       metrics      = {},
@@ -18,6 +18,7 @@ export async function POST(req: Request) {
 
     const imagePayload = sourceImage || image_url;
     const locationStr  = backgroundStyle || location || null;
+    const hasClientPhoto = !!(clientPhoto as string | null);
 
     // 2. Security Check: Ensure the API key exists
     if (!process.env.FAL_KEY) {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Build the metrics clause so the AI scales for the client's body
+    // 3. Build the metrics clause
     const { height = "", chest = "", waist = "", hips = "" } =
       metrics as Record<string, string>;
     const metricsParts = [
@@ -44,46 +45,58 @@ export async function POST(req: Request) {
       waist  && `waist ${waist}`,
       hips   && `hips ${hips}`,
     ].filter(Boolean);
-    const metricsClause =
-      metricsParts.length > 0
-        ? ` Scale the mannequin for client measurements: ${metricsParts.join(", ")}.`
-        : "";
+    const metricsClause = metricsParts.length > 0
+      ? ` Fit the garment to client measurements: ${metricsParts.join(", ")}.`
+      : "";
 
-    // 4. The Brand DNA (Our Aesthetic Rules)
-    //    Explicitly instructs the model to preserve source graphics/logos/patterns.
+    // 4. Brand DNA — no color words to avoid training-data palette bias
     const OOPS_BRAND_DNA =
-      `OOPS brand aesthetic, avant-garde 'Daylight Punk' upcycled fashion. ` +
+      `OOPS brand aesthetic, avant-garde upcycled fashion. ` +
       `The garment MUST be constructed by splicing and repurposing the EXACT materials, ` +
-      `graphics, logos, and patterns visible in the source image. ` +
-      `Retain the original graphic prints (e.g., band logos, vintage text) but distort ` +
-      `and re-sew them into the new silhouette. ` +
+      `colors, graphics, and patterns visible in the source image. ` +
       `Features brutalist asymmetrical patchwork and raw frayed exposed seams. ` +
       `Heavily detailed with utilitarian metal hardware: oversized D-rings, ` +
       `tactical buckles, thick chains, and safety pins. ` +
       `High-end fashion editorial, hyper-realistic physical fabric textures, ` +
-      `35mm film photography. ` +
-      `NO human faces. NO glossy 3D renders. NO studio polish.`;
+      `35mm film photography. NO glossy 3D renders. NO studio polish.`;
 
     // 5. Assemble the Master Prompt
+    //
+    // Two modes:
+    //   hasClientPhoto = true  → Subject is the REAL PERSON from the photo.
+    //                            We describe the look ON them, in the scene.
+    //   hasClientPhoto = false → Subject is an industrial tailor's mannequin.
+    //                            Original editorial-photography mode.
+
     const settingClause = locationStr
       ? `Shot on location in a ${locationStr}.`
-      : "Shot in a harsh, minimalist white studio void.";
+      : "Shot in a harsh, minimalist white studio void with high-end editorial lighting.";
 
     const designDirective = (userVision as string | null)?.trim()
       ? (userVision as string).trim()
       : "a chaotic, avant-garde reimagining — raw, distressed, deconstructed, asymmetrical.";
 
+    const subjectClause = hasClientPhoto
+      ? `THE SUBJECT: The real person visible in the source image, wearing a completely ` +
+        `custom upcycled garment reconstructed from the fabrics in the image.${metricsClause} ` +
+        `Keep the person's face, body, and skin exactly as they appear in the source. ` +
+        `Only the clothing changes — replace whatever they are wearing with the OOPS upcycled piece. ` +
+        `NO face changes. NO skin changes. NO body changes. Only the garment is new.`
+      : `THE SUBJECT: A custom, industrial tailor's mannequin displaying a completely ` +
+        `custom upcycled garment.${metricsClause}`;
+
     const fullPrompt =
       `Avant-garde fashion editorial photography, 35mm film. ` +
       `THE SETTING: ${settingClause} ` +
-      `THE SUBJECT: A custom, industrial tailor's mannequin displaying a completely ` +
-      `custom upcycled garment.${metricsClause} ` +
+      `${subjectClause} ` +
       `THE DESIGN DIRECTIVE: ${designDirective}. ` +
       (analysisText ? `Informed by fabric analysis: "${analysisText}". ` : "") +
       `STRICT BRANDING: ${OOPS_BRAND_DNA} ` +
-      `CRITICAL INSTRUCTION: DO NOT change the colors or graphic prints of the source image. ` +
-      `You MUST preserve the EXACT colors, patterns (e.g., plaid, stripes, logos), and prints ` +
-      `from the input image. Only add raw seams, asymmetrical cuts, and metal hardware on top.`;
+      `CRITICAL INSTRUCTION: YOU ARE STRICTLY FORBIDDEN FROM CHANGING THE COLORS OR PATTERNS ` +
+      `OF THE INPUT IMAGE FABRICS. If the input has camo, the output MUST have camo. ` +
+      `If the input has pink lace, the output MUST have pink lace. ` +
+      `Do not invent new fabrics. Merely apply the OOPS architectural elements ` +
+      `(raw seams, asymmetrical cuts, metal hardware) to the existing input pixels.`;
 
     // 6. Fire the Engine (Secure fetch to Fal.ai)
     const response = await fetch("https://fal.run/fal-ai/flux-pro", {
@@ -98,7 +111,7 @@ export async function POST(req: Request) {
         image_size:          "portrait_4_3",
         num_inference_steps: 35,
         guidance_scale:      5.0,          // stricter prompt adherence
-        strength:            0.45,         // low mutation — preserves source colors/logos/patterns
+        strength:            0.35,         // low mutation — acts as texture filter, not a full redraw
         num_images:          1,
         prompt_upsampling:   false,        // prevent Fal.ai LLM from rewriting our prompt
         safety_tolerance:    "6",

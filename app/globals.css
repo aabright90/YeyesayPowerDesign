@@ -31,7 +31,7 @@ body {
   position: relative;
 }
 
-/* Global film grain overlay */
+/* Global film grain overlay — disabled on low-power mobile devices */
 body::after {
   content: "";
   position: fixed;
@@ -46,6 +46,13 @@ body::after {
   z-index: 9999;
   mix-blend-mode: overlay;
   animation: grain-shift 0.15s steps(1) infinite;
+}
+
+@media (max-width: 640px) {
+  body::after {
+    animation: none;
+    opacity: 0.03;
+  }
 }
 
 /* ── Keyframes ─────────────────────────────────────────────────────────── */
@@ -255,7 +262,7 @@ body::after {
   box-shadow: 2px 2px 0 var(--acid);
 }
 
-/* ── Scrollbar — minimal ──────────────────────────────────────────────── */
+/* ── Scrollbar — minimal on desktop, wider on touch ──────────────────── */
 
 ::-webkit-scrollbar {
   width: 2px;
@@ -266,6 +273,17 @@ body::after {
 }
 ::-webkit-scrollbar-thumb {
   background: #333;
+}
+
+@media (max-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+  }
 }
 
 @layer utilities {

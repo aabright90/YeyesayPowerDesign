@@ -124,7 +124,7 @@ export default function AdminPage() {
     <div className="h-full w-full flex flex-col overflow-hidden normal-case">
 
       {/* ── Page Header — pinned, never scrolls ──────────────────────────── */}
-      <header className="flex-shrink-0 px-5 pt-5 pb-3 sm:px-8 sm:pt-6">
+      <header className="flex-shrink-0 px-3 pt-3 pb-2 sm:px-5 sm:pt-5 sm:pb-3 lg:px-8 lg:pt-6">
 
         {/* Access badge */}
         <div className="mb-3 flex items-center gap-3">
@@ -145,7 +145,7 @@ export default function AdminPage() {
       </header>
 
       {/* ── Split Layout — fills all remaining height ─────────────────────── */}
-      <div className="flex-1 min-h-0 flex flex-col lg:flex-row mx-5 mb-4 sm:mx-8 sm:mb-5 border-4 border-[#111111] shadow-[12px_12px_0_0_#111111] overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row mx-3 mb-3 border-4 border-[#111111] shadow-[6px_6px_0_0_#111111] overflow-hidden sm:mx-5 sm:mb-4 sm:shadow-[8px_8px_0_0_#111111] lg:mx-8 lg:mb-5 lg:shadow-[12px_12px_0_0_#111111]">
 
         {/* ════════════════════════════════
             LEFT — Upload Form (static, pinned)
@@ -160,7 +160,7 @@ export default function AdminPage() {
           </div>
 
           {/* Form fields — scroll internally if viewport is short */}
-          <div className="flex-1 overflow-y-auto flex flex-col gap-5 bg-white px-5 py-6">
+          <div className="flex-1 overflow-y-auto flex flex-col gap-4 bg-white px-3 py-4 sm:gap-5 sm:px-5 sm:py-6">
 
             {/* Garment type */}
             <div className="flex flex-col gap-1.5">
@@ -297,7 +297,7 @@ export default function AdminPage() {
             </h2>
           </div>
 
-          <div className="flex-1 overflow-y-auto bg-punk-halftone p-6 pb-10">
+          <div className="flex-1 overflow-y-auto bg-punk-halftone p-3 pb-8 sm:p-6 sm:pb-10">
             {inventory.length === 0 ? (
               <div className="flex h-48 flex-col items-center justify-center gap-2 border-2 border-dashed border-[#111111] bg-white">
                 <p className="font-mono text-xs font-bold tracking-[0.18em] text-[#111111]/60">
@@ -305,7 +305,7 @@ export default function AdminPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {inventory.map((item) => (
                   <div
                     key={item.id}

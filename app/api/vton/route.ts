@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     // Return the garment image as a placeholder for the final fit
     return NextResponse.json({ imageUrl: garmentImage });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "MOCK VTON CRASHED." }, { status: 500 });
   }
 }
